@@ -55,11 +55,11 @@ visualize_country <- function(c1, c2){
   # I may need to do some try and error to make the program robust
   # try(if(!data_all[str(c1)] | !data_all[str(c2)]) stop("at least one country data is missing or type error"))
   
-  a <- data_all %>% filter(country == c1 | country == c2)
-  # if (class(a)[1] == "try-error"){
-  #   print("at least one country data is missing or type error")
-  #   stop()
-  # }
+  a <- try(data_all %>% filter(country == c1 | country == c2))
+  if (class(a)[1] == "try-error"){
+    print("at least one country data is missing or type error")
+    stop()
+  }
   # pick up the data of co2 emission and oil consumption separatly,
   
   a_oil <- a %>% select(ends_with("country") | ends_with("x"))
@@ -72,6 +72,7 @@ visualize_country <- function(c1, c2){
   a_oil <- a_oil %>% rename(country_oil = country)
   
   a_co2 <- a %>% select(ends_with("country") | ends_with("y"))
+  
   # rename the col_name by deleting ".y" like from "1965.y" to "1965", 
   # and move these cols into rows to be the time series
   
@@ -79,7 +80,8 @@ visualize_country <- function(c1, c2){
      
   a_co2 <- a_co2 %>% pivot_longer(c(`1964`:`2017`), names_to = "year", values_to =  "CO2_emission")
   a_co2 <- a_co2 %>% rename(country_co2 = country)
-
+  
+  # combine a_oil and a_co2
   a_combine <- a_oil %>% mutate(a_co2$CO2_emission)
   x_label <- seq(min(a_co2$year),max(a_co2$year), 10)
   #now we draw the figures of them separately.
@@ -87,17 +89,21 @@ visualize_country <- function(c1, c2){
     geom_point(data = a_oil, aes(x = year, y = Oil_Consumption, color = country_oil), shape = 23) +
     geom_point(data = a_co2, aes(x = year, y = CO2_emission, color = country_co2)) + 
     scale_x_discrete(breaks = x_label)
-    
-  # I want to use a second y axis to explain my point but don't know how
+  # use scale_x_discrete, so that the x axis looks better without squeezing together
+  # TO DO: I want to make the legend separated by different data
+  # TO DO: I want to use a second y axis to explain my point but don't know how
+  
+  
   p2 <- ggplot(a_combine) +
     geom_point(data = a_combine, aes(x = Oil_Consumption, y = a_co2$CO2_emission, color = country_oil)) +
     geom_smooth(data = a_combine, aes(x = Oil_Consumption, y = a_co2$CO2_emission, color = country_oil),
                 formula = y ~ x, method = "lm")
   
+  # plot 2 figures in one plot page
   multiplot(p1, p2, cols = 1)
 }
 
-### test part
+### test part, here we use China and India to make an example
 visualize_country("China", "India")
 
 
