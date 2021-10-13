@@ -92,6 +92,8 @@ visualize_country <- function(c1, c2){
   # use scale_x_discrete, so that the x axis looks better without squeezing together
   # TO DO: I want to make the legend separated by different data
   # TO DO: I want to use a second y axis to explain my point but don't know how
+  # use sec.axis = sec_axis( trans = , name = ""), 
+  # more detail looking at https://www.r-graph-gallery.com/line-chart-dual-Y-axis-ggplot2.html
   
   
   p2 <- ggplot(a_combine) +
