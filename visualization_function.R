@@ -81,11 +81,13 @@ visualize_country <- function(c1, c2){
   a_co2 <- a_co2 %>% rename(country_co2 = country)
 
   a_combine <- a_oil %>% mutate(a_co2$CO2_emission)
-  
+  x_label <- seq(min(a_co2$year),max(a_co2$year), 10)
   #now we draw the figures of them separately.
   p1 <- ggplot() + 
     geom_point(data = a_oil, aes(x = year, y = Oil_Consumption, color = country_oil), shape = 23) +
-    geom_point(data = a_co2, aes(x = year, y = CO2_emission, color = country_co2))
+    geom_point(data = a_co2, aes(x = year, y = CO2_emission, color = country_co2)) + 
+    scale_x_discrete(breaks = x_label)
+    
   # I want to use a second y axis to explain my point but don't know how
   p2 <- ggplot(a_combine) +
     geom_point(data = a_combine, aes(x = Oil_Consumption, y = a_co2$CO2_emission, color = country_oil)) +
@@ -96,7 +98,7 @@ visualize_country <- function(c1, c2){
 }
 
 ### test part
-# visualize_country("China", "India")
+visualize_country("China", "India")
 
 
 
