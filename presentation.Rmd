@@ -1,0 +1,42 @@
+---
+title: "Assignment 2 Presentation"
+author: "Jinyu"
+date: "2021/10/08"
+output:
+  slidy_presentation: default
+---
+
+## Introduction
+
+From the Gapminder, I look at the environmental health part. I am interested in the CO2 emission and the oil consumption among countries. Also, I am curious whether these 2 variables show some kind of relationships. Consequently, I downloaded the CSV files of CO2 emission and oil consumption per person. And, I did some EDA to see what exits in the data.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Visualization and Explanation
+
+I plot 2 figures. The upper one is scatter plot of time series. As it is shown, the red filled dot and the hollow dot both represent the data in China and the blue ones represent the data in India. The filled dot means the oil consumption amount per person and the hollow dot means the CO2 emission amount per person.
+
+As we can see, each of the variables increase as the time move on, which means that people are using more oil and CO2 emission is also increasing. We can imagine that this is because the 2 countries are developing and there are more facilities for them to consume oil and emit CO2.
+
+Compare the data in China and India, we can tell that the data in India is constantly increase, while the data in China show a surge in about 2000.
+
+```{r, echo=FALSE, show_col_types = FALSE}
+source("visualization_function.R")
+```
+
+## Visualization and Explanation
+
+The lower figure is the scatter and 2 fit line for equation CO2_emission = b0 + b1 \* oil_consumption, grouped by the country. According to the figure, we can generally assume that these 2 variables show a linear correlation, which need to be verified later. We can give a simple guess that maybe the oil_consumption is positively related with CO2_emission.
+
+```{r echo=FALSE, show_col_types = FALSE}
+source("visualization_function.R")
+```
+
+## Conclusion
+
+-   From the upper figure, we can say as the time move on, the oil consumption and CO2 emission in both China and India are increasing.
+-   From the lower figure, we can guess that maybe the oil_consumption is positively related with CO2_emission.
+-   Compare the data in China and India, we can tell that the data in India is constantly increase, while the data in China show a surge in about 2000.
+-   In the future, if we want to explore more details about these 2 variables, we can find other variables like coal consumption to make a better regression. And we can also do some causal anaylsis to make sure there are some strong connections among variables and also do some validations to make suer the regression is valid and robust.
