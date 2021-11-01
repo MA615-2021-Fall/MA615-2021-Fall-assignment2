@@ -105,8 +105,50 @@ visualize_country <- function(c1, c2){
   multiplot(p1, p2, cols = 1)
 }
 
-### test part, here we use China and India to make an example
-visualize_country("China", "India")
+visualize_country_2.0 <- function(c1, c2, year_from, year_to){
+  
+  # This function do the comparison betweeen countries about their co2 emission per person and 
+  # the oil consumption in countries per person
+  # I may need to do some try and error to make the program robust
+  # try(if(!data_all[str(c1)] | !data_all[str(c2)]) stop("at least one country data is missing or type error"))
+  # I add the variables "year_from" and "year_to" so that you could choose the time period you want to plot the graph.
+
+  a <- try(data_all %>% filter(country == c1 | country == c2))
+  if (class(a)[1] == "try-error"){
+    print("at least one country data is missing or type error")
+    stop()
+  }
+
+  # pick up the data of co2 emission and oil consumption separatly
+  # rename the col_name by deleting ".x" like from "1965.x" to "1965", 
+  # and move these cols into rows to be the time series
+  
+  a_oil <- a %>% select(ends_with("country") | ends_with("x"))
+  a_oil <- a_oil %>% 
+    rename_with( ~ gsub(".x", "", .x, fixed = T)) %>% 
+    pivot_longer(c(year_from:year_to), names_to = "year", values_to =  "Oil_Consumption")
+  a_oil <- a_oil %>% rename(country_oil = country)
+  a_oil$year <- as.numeric(a_oil$year)
+  
+  a_co2 <- a %>% select(ends_with("country") | ends_with("y"))
+  a_co2 <- a_co2 %>% 
+    rename_with( ~ gsub(".y", "", .x, fixed = T)) %>% 
+    pivot_longer(c(year_from:year_to), names_to = "year", values_to =  "CO2_emission")
+  a_co2 <- a_co2 %>% rename(country_co2 = country)
+  a_co2$year <- as.numeric(a_co2$year)
+
+  #using the geom_path to plot the graph to see the tendenct
+  p1 <- ggplot() + 
+    geom_path(data = a_oil, aes(x = year, y = Oil_Consumption, color = country_oil))
+  
+  p2 <- ggplot() +
+    geom_path(data = a_co2, aes(x = year, y = CO2_emission, color = country_co2)) 
+
+  # two plots figure in one plot page
+  multiplot(p1, p2, cols = 1)
+}
+
+visualize_country_2.0("China", "India", "1980", "2017")
 
 
 
